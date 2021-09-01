@@ -1,39 +1,48 @@
-from enum import Flag
 import requests as req
 import os.path
 import re
+from hashlib import sha256
 
-print('__---### WELCOME ###---__')
-start = input(
-    'please enter your encoded nmonic phrase for decoding or press Enter to encode your nmonic: ')
 
-file = open('./english.txt', 'r').read()
+def createNmonicWordsListFile():
+    print('creating english.txt...')
 
-if(start == ''):
-    def createNmonicWordsListFile():
-        print('creating english.txt...')
+    url = 'https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt'
+    res = req.get(url)
 
-        url = 'https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt'
-        res = req.get(url)
+    file = open('./english.txt', 'w')
+    file.write(res.text)
 
-        file = open('./english.txt', 'w')
-        file.write(res.text)
 
-    # TODO: check sha256 hash of english.text instead of ask for overriding every time
+def checkEnglishFile():
     if(os.path.isfile('./english.txt')):
-        answer = input('do you want to override english.text? y/n ')
-        if(answer == 'y'):
+        file = open('./english.txt', 'r').read()
+        if (sha256(file.encode('utf-8')).hexdigest() != "2f5eed53a4727b4bf8880d8f3f199efc90e58503646d9ff8eff3a2ed3b24dbda"):
+            print('english.text file has currupted!')
+            print('remaking english.txt...')
             createNmonicWordsListFile()
+
     else:
         createNmonicWordsListFile()
 
+
+print('__---### WELCOME ###---__')
+
+checkEnglishFile()
+
+start = input(
+    'please enter your encoded nmonic phrase for decoding or press Enter to encode your nmonic: ')
+
+
+if(start == ''):
+    data = open('./english.txt', 'r').read()
     nmonicPhrase = input('please enter your nmonic phrase: ')
     nmonicList = nmonicPhrase.split(' ')
     newNmonic = []
 
     for word in nmonicList:
         similar = '\n'.join(re.findall(
-            '^' + word[:1] + '.*', file, flags=re.M))
+            '^' + word[:1] + '.*', data, flags=re.M))
 
         w = ''
         for char in word:
@@ -45,19 +54,20 @@ if(start == ''):
                 newNmonic.append(w)
                 break
 
-    print(''.join(newNmonic))
+    print('   ', ''.join(newNmonic))
 else:
+    data = open('./english.txt', 'r').read()
     word = ''
     nmonic = ['']
     for char in start:
         word += char
-        
-        found = re.findall('^' + word + '.*', file, flags=re.M)
-        
+
+        found = re.findall('^' + word + '.*', data, flags=re.M)
+
         if (len(found) > 1):
             continue
         else:
             nmonic.append(found[0])
             word = ''
-        
-    print(' '.join(nmonic))
+
+    print('  ', ' '.join(nmonic))
