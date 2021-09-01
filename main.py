@@ -5,8 +5,6 @@ from hashlib import sha256
 
 
 def createNmonicWordsListFile():
-    print('creating english.txt...')
-
     url = 'https://raw.githubusercontent.com/bitcoin/bips/master/bip-0039/english.txt'
     res = req.get(url)
 
