@@ -1,4 +1,4 @@
-# nmonicPhraseFormatter
+# Nmonic Phrase Formatter
 For each indivisual nmonic words in the bip39, there is a unique starter substring.   
 
 For example:
