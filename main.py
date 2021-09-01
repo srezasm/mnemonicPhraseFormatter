@@ -4,9 +4,12 @@ import os.path
 import re
 
 print('__---### WELCOME ###---__')
-start = input('please enter your encoded nmonic phrase for decoding or press Enter to encode your nmonic: ')
+start = input(
+    'please enter your encoded nmonic phrase for decoding or press Enter to encode your nmonic: ')
 
-if(start==''):
+file = open('./english.txt', 'r').read()
+
+if(start == ''):
     def createNmonicWordsListFile():
         print('creating english.txt...')
 
@@ -15,30 +18,28 @@ if(start==''):
 
         file = open('./english.txt', 'w')
         file.write(res.text)
-    
-    #TODO: check sha256 hash of english.text instead of ask for overriding every time
+
+    # TODO: check sha256 hash of english.text instead of ask for overriding every time
     if(os.path.isfile('./english.txt')):
-        print('english.text nmonic words list file already exists.')
-        answer = input('do you want to override? y/n ')
+        answer = input('do you want to override english.text? y/n ')
         if(answer == 'y'):
             createNmonicWordsListFile()
     else:
         createNmonicWordsListFile()
 
-
     nmonicPhrase = input('please enter your nmonic phrase: ')
     nmonicList = nmonicPhrase.split(' ')
-    file = open('./english.txt', 'r').read()
     newNmonic = []
 
     for word in nmonicList:
-        similar = '\n'.join(re.findall('^' + word[:1] + '.*', file, flags=re.M))
+        similar = '\n'.join(re.findall(
+            '^' + word[:1] + '.*', file, flags=re.M))
 
         w = ''
-        for a in word:
-            w += a
-            fa = re.findall('^'+w+'.*', similar, flags=re.M)
-            if(len(fa) > 1):
+        for char in word:
+            w += char
+            found = re.findall('^'+w+'.*', similar, flags=re.M)
+            if(len(found) > 1):
                 continue
             else:
                 newNmonic.append(w)
@@ -46,4 +47,17 @@ if(start==''):
 
     print(''.join(newNmonic))
 else:
-    print('decoding process...')
+    word = ''
+    nmonic = ['']
+    for char in start:
+        word += char
+        
+        found = re.findall('^' + word + '.*', file, flags=re.M)
+        
+        if (len(found) > 1):
+            continue
+        else:
+            nmonic.append(found[0])
+            word = ''
+        
+    print(' '.join(nmonic))
