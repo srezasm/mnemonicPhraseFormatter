@@ -1,6 +1,6 @@
 # Mnemonic Phrase Formatter
 
-For each individual mnemonic words in the bip39, there is a unique starter substring.
+For each individual mnemonic word in the bip39 words list, there is a unique starter substring.
 
 For example:
 
@@ -9,6 +9,6 @@ For example:
 * cave => cav
 * era => era
 
-So the base idea is to split the unique part out of each mnemonic word and stick them after one another by the default order and remake the original mnemonic phrase as the same way later on.
+So the base idea is to split the unique part out of each mnemonic word and stick them after one another order to generate a digest-unreadable phrase or remake the original mnemonic phrase later on as the same way.
 
-## Be aware this is just an experimental-fun project and this might be not suggested. So all the responsibility of using it is on the user
+## Be aware this is just an experimental-fun project and might be not suggested. So all the responsibility of using it is on the user
